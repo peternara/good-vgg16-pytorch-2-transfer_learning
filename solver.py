@@ -8,15 +8,17 @@ import torch.nn as nn
 import torch.utils.data
 import torch.backends.cudnn
 import torchvision.transforms as transforms
+from tensorboardX import SummaryWriter
 from model import Model
 from dataset import MyDataset
 
 class Solver:
     def __init__(self,args):
         self.args=args
+        self.best_acc1=0
+        self.writer=SummaryWriter()
 
     def train_model(self):
-        global best_acc1
         # build model
         model=Model(self.args.num_classes)
         # DataParrallel will divide and allocate batch_size to all available GPUs
@@ -76,12 +78,12 @@ class Solver:
             acc1=self.validate(val_loader,model,loss_calc,self.args)
 
             # remember the best acc1 and save checkpoint
-            self.is_best=(acc1>best_acc1)
-            best_acc1=max(acc1,best_acc1)
+            self.is_best=(acc1>self.best_acc1)
+            best_acc1=max(acc1,self.best_acc1)
             self.save_checkpoint({
                 'epoch': epoch+1,
                 'state_dict':model.state_dict(),
-                'best_acc1':best_acc1,
+                'best_acc1':self.best_acc1,
                 'optimizer':optimizer.state_dict(),
             },self.is_best)
 
@@ -113,6 +115,12 @@ class Solver:
             losses.update(loss.item(),input.size(0))
             top1.update(acc1[0],input.size(0))
             top5.update(acc5[0],input.size(0))
+
+            # display in tensorboardX
+            if i%args.summary_freq==0:
+                self.writer.add_scalar('loss',loss,i)
+                self.writer.add_scalar('top1_accuracy',acc1[0],i)
+                self.writer.add_scalar('top5_accuracy',acc5[0],i)
 
             # compute gradient and do Adam step
             optimizer.zero_grad()  # Sets gradients of all model parameters to zero.
