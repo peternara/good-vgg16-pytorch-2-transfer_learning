@@ -79,7 +79,7 @@ class Solver:
 
             # remember the best acc1 and save checkpoint
             self.is_best=(acc1>self.best_acc1)
-            best_acc1=max(acc1,self.best_acc1)
+            self.best_acc1=max(acc1,self.best_acc1)
             self.save_checkpoint({
                 'epoch': epoch+1,
                 'state_dict':model.state_dict(),
