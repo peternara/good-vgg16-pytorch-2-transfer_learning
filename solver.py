@@ -65,6 +65,7 @@ class Solver:
             dataset=val_dataset, batch_size=self.args.batch_size, shuffle=False,
             num_workers=self.args.load_workers, pin_memory=True)
 
+        self.steps_per_epoch = len(train_loader)//self.args.batch_size
 
         # train the model
         for epoch in range(self.args.start_epoch,self.args.num_epochs):
@@ -98,6 +99,7 @@ class Solver:
         model.train()
 
         end_time=time.time()
+        global_step=0
 
         for i,(input,target) in enumerate(train_loader):
             # measure data loading time
@@ -118,9 +120,9 @@ class Solver:
 
             # display in tensorboardX
             if i%args.summary_freq==0:
-                self.writer.add_scalar('loss',loss,i)
-                self.writer.add_scalar('top1_accuracy',acc1[0],i)
-                self.writer.add_scalar('top5_accuracy',acc5[0],i)
+                self.writer.add_scalar('loss',loss,epoch*self.steps_per_epoch+i)
+                self.writer.add_scalar('top1_accuracy',acc1[0],epoch*self.steps_per_epoch+i)
+                self.writer.add_scalar('top5_accuracy',acc5[0],epoch*self.steps_per_epoch+i)
 
             # compute gradient and do Adam step
             optimizer.zero_grad()  # Sets gradients of all model parameters to zero.
