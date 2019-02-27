@@ -125,11 +125,11 @@ class Solver:
 
             if i%args.print_freq==0:
                 print('epoch: {0} step: [{1}/{2}]\n'
-                      'batch time: {batch_time.val:.3f} (avg: {batch_time.avg:.3f})\n'
-                      'data loading time: {data_load_time.val:.3f} (avg: {data_load_time.avg:.3f})\n'
+                      'batch time: {batch_time.val:.3f}s (avg: {batch_time.avg:.3f}s)\n'
+                      'data loading time: {data_load_time.val:.3f}s (avg: {data_load_time.avg:.3f}s)\n'
                       'loss: {loss.val:.4f} (avg: {loss.avg:.4f})\n'
-                      'top1 accuracy: {top1.val:.3f} (avg: {top1.avg:.3f})\n'
-                      'top5 accuracy: {top5.val:.3f} (avg: {top5.avg:.3f})'.format(
+                      'top1 accuracy: %{top1.val:.3f} (avg: %{top1.avg:.3f})\n'
+                      'top5 accuracy: %{top5.val:.3f} (avg: %{top5.avg:.3f})'.format(
                         epoch,i,len(train_loader),batch_time=batch_time,
                         data_load_time=data_load_time,loss=losses,top1=top1,top5=top5))
 
@@ -137,11 +137,11 @@ class Solver:
         try:
             with open('train_results.txt','w') as f:
                 f.write('epoch: {0} \n'
-                  'batch time: {batch_time.avg:.3f}\n'
-                  'data loading time: {data_load_time.avg:.3f}\n'
+                  'batch time: {batch_time.avg:.3f}s\n'
+                  'data loading time: {data_load_time.avg:.3f}s\n'
                   'loss: {loss.avg:.4f}\n'
-                  'top1 accuracy: {top1.avg:.3f}\n'
-                  'top5 accuracy: {top5.avg:.3f}'.format(
+                  'top1 accuracy: %{top1.avg:.3f}\n'
+                  'top5 accuracy: %{top5.avg:.3f}'.format(
                     epoch,batch_time=batch_time,
                     data_load_time=data_load_time,loss=losses,top1=top1,top5=top5))
         except Exception as e:
@@ -178,10 +178,10 @@ class Solver:
 
                 if i%args.print_freq==0:
                     print('val step: [{0}/{1}]\n'
-                          'batch time: {batch_time.val:.3f} (avg: {batch_time.avg:.3f})\n'
+                          'batch time: {batch_time.val:.3f}s (avg: {batch_time.avg:.3f}s)\n'
                           'loss: {loss.val:.4f} (avg: {loss.avg:.4f})\n'
-                          'top1 accuracy: {top1.val:.3f} (avg: {top1.avg:.3f})\n'
-                          'top5 accuracy: {top5.val:.3f} (avg: {top5.avg:.3f})'.format(
+                          'top1 accuracy: %{top1.val:.3f} (avg: %{top1.avg:.3f})\n'
+                          'top5 accuracy: %{top5.val:.3f} (avg: %{top5.avg:.3f})'.format(
                         i, len(val_loader), batch_time=batch_time,
                         loss=losses, top1=top1, top5=top5))
 
@@ -189,8 +189,8 @@ class Solver:
             try:
                 with open('val_results.txt','w') as f:
                     f.write('loss: {loss.avg:.4f})\n'
-                          'top1 accuracy: {top1.avg:.3f}\n'
-                          'top5 accuracy: {top5.avg:.3f}'.format(
+                          'top1 accuracy: %{top1.avg:.3f}\n'
+                          'top5 accuracy: %{top5.avg:.3f}'.format(
                         loss=losses, top1=top1, top5=top5))
             except Exception as e:
                 print(e)
