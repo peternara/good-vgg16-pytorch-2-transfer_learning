@@ -65,7 +65,7 @@ class Solver:
 
 
         # train the model
-        for epoch in range(self.args.start_spoch,self.args.num_epochs):
+        for epoch in range(self.args.start_epoch,self.args.num_epochs):
             # adjust learning rate
             self.adjust_lr(optimizer,epoch,self.args)
 
@@ -101,8 +101,8 @@ class Solver:
             # measure data loading time
             data_load_time.update(time.time()-end_time)
 
-            input=input.cuda(non_blocking=True)
-            target=target.cuda(non_blocking=True)
+            #input=input.cuda(non_blocking=True)
+            target=(torch.tensor(target)).cuda(non_blocking=True)
 
             # compute output
             output=model(input)
@@ -133,19 +133,19 @@ class Solver:
                         epoch,i,len(train_loader),batch_time=batch_time,
                         data_load_time=data_load_time,loss=losses,top1=top1,top5=top5))
 
-            # write to log file
-            try:
-                with open('train_results.txt','w') as f:
-                    f.write('epoch: {0} \n'
-                      'batch time: {batch_time.avg:.3f}\n'
-                      'data loading time: {data_load_time.avg:.3f}\n'
-                      'loss: {loss.avg:.4f}\n'
-                      'top1 accuracy: {top1.avg:.3f}\n'
-                      'top5 accuracy: {top5.avg:.3f}'.format(
-                        epoch,batch_time=batch_time,
-                        data_load_time=data_load_time,loss=losses,top1=top1,top5=top5))
-            except Exception as e:
-                print(e)
+        # write to log file
+        try:
+            with open('train_results.txt','w') as f:
+                f.write('epoch: {0} \n'
+                  'batch time: {batch_time.avg:.3f}\n'
+                  'data loading time: {data_load_time.avg:.3f}\n'
+                  'loss: {loss.avg:.4f}\n'
+                  'top1 accuracy: {top1.avg:.3f}\n'
+                  'top5 accuracy: {top5.avg:.3f}'.format(
+                    epoch,batch_time=batch_time,
+                    data_load_time=data_load_time,loss=losses,top1=top1,top5=top5))
+        except Exception as e:
+            print(e)
 
     def validate(self,val_loader,model,loss_calc,args):
         batch_time = AverageMeter()
@@ -156,12 +156,14 @@ class Solver:
         # Sets the module in evaluation mode.
         model.eval()
 
-        with torch.autograd.no_grad():
+        with torch.no_grad():
             end_time=time.time()
 
             for i,(input,target) in enumerate(val_loader):
+                print(input)
                 input=input.cuda(non_blocking=True)
-                target=target.cuda(non_blocking=True)
+                print(input)
+                target = (torch.tensor(target)).cuda(non_blocking=True)
 
                 output=model(input)
                 loss=loss_calc(output,target)
@@ -204,7 +206,7 @@ class Solver:
             param_group['lr'] = lr
 
     def acc_calc(self,output,target,topk=(1,)):
-        with torch.autograd.no_grad():
+        with torch.no_grad():
             maxk=max(topk)
             batch_size=target.size(0)
 

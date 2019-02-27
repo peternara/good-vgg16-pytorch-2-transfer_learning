@@ -3,7 +3,7 @@ import os
 import argparse
 from solver import Solver
 
-os.environ['CUDA_VISIBLE_DEVICES']='0,1,2,3'
+os.environ['CUDA_VISIBLE_DEVICES']='1,2,3,4'
 
 parser=argparse.ArgumentParser('ImageNet classification using a Vgg16 network')
 parser.add_argument('--img_size',default=224,type=int,help='input image size (default:224)')
@@ -17,6 +17,7 @@ parser.add_argument('--num_epochs',default=1000,type=int,help='number of trainin
 parser.add_argument('--data_path',default='/dataset/ImageNet',type=str,help='path to dataset (default:"/dataset/ImageNet")')
 parser.add_argument('--resume_file',default='',type=str,help='path to latest checkpoint (default: none)')
 parser.add_argument('--print_freq',type=int,default=10,help='print frequency (default: 10)')
+parser.add_argument('--start_epoch',type=int,default=0,help='start epoch of training')
 
 def main():
     args=parser.parse_args()

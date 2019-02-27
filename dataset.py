@@ -35,7 +35,7 @@ class MyDataset(Dataset):
         else:
             img=torch.Tensor.from_numpy(img)
 
-        return img,label
+        return img,int(label)
 
     def __len__(self):
         return len(self.img_list)
