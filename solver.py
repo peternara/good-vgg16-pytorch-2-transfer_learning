@@ -101,8 +101,8 @@ class Solver:
             # measure data loading time
             data_load_time.update(time.time()-end_time)
 
-            #input=input.cuda(non_blocking=True)
-            target=(torch.tensor(target)).cuda(non_blocking=True)
+            input=input.cuda(non_blocking=True)
+            target=target.cuda(non_blocking=True)
 
             # compute output
             output=model(input)
@@ -160,10 +160,8 @@ class Solver:
             end_time=time.time()
 
             for i,(input,target) in enumerate(val_loader):
-                print(input)
                 input=input.cuda(non_blocking=True)
-                print(input)
-                target = (torch.tensor(target)).cuda(non_blocking=True)
+                target = target.cuda(non_blocking=True)
 
                 output=model(input)
                 loss=loss_calc(output,target)
