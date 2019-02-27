@@ -19,10 +19,11 @@ class Solver:
         global best_acc1
         # build model
         model=Model(self.args.num_classes)
-        model.cuda(self.args.gpu)
+        # DataParrallel will divide and allocate batch_size to all available GPUs
+        model=torch.nn.DataParallel(model).cuda()
 
         # define loss and optimizer
-        loss_calc=nn.CrossEntropyLoss().cuda(self.args.gpu)
+        loss_calc=nn.CrossEntropyLoss().cuda()
         optimizer=torch.optim.Adam(model.parameters(),lr=self.args.lr,
                                    weight_decay=self.args.weight_decay)
         # optionally resume from a checkpoint
@@ -100,8 +101,8 @@ class Solver:
             # measure data loading time
             data_load_time.update(time.time()-end_time)
 
-            input=input.cuda(args.gpu,non_blocking=True)
-            target=target.cuda(args.gpu,non_blocking=True)
+            input=input.cuda(non_blocking=True)
+            target=target.cuda(non_blocking=True)
 
             # compute output
             output=model(input)
@@ -159,8 +160,8 @@ class Solver:
             end_time=time.time()
 
             for i,(input,target) in enumerate(val_loader):
-                input=input.cuda(args.gpu,non_blocking=True)
-                target=target.cuda(args.gpu,non_blocking=True)
+                input=input.cuda(non_blocking=True)
+                target=target.cuda(non_blocking=True)
 
                 output=model(input)
                 loss=loss_calc(output,target)
