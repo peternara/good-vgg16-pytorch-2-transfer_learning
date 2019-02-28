@@ -33,9 +33,12 @@ class Solver:
             if os.path.isfile(self.args.resume_file):
                 print("=> loading checkpoint '{}'".format(self.args.resume_file))
                 checkpoint=torch.load(self.args.resume_file)
-                self.args.start_spoch=checkpoint['epoch']
+                self.args.start_epoch=checkpoint['epoch']
+                self.best_acc1=checkpoint['best_acc1']
+                model.load_state_dict(checkpoint['state_dict'])
+                optimizer.load_state_dict(checkpoint['optimizer'])
                 print("=> loaded checkpoint '{}' (epoch {})"
-                      .format(self.args.resume_file,self.args.start_spoch))
+                      .format(self.args.resume_file,self.args.start_epoch))
             else:
                 print("=> no checkpoint found at '{}'".format(self.args.resume_file))
                 return 1
@@ -77,7 +80,7 @@ class Solver:
             self.train_epoch(train_loader,model,loss_calc,optimizer,epoch,self.args)
 
             # evaluate on validation set
-            acc1=self.validate(val_loader,model,loss_calc,self.args)
+            acc1=self.validate(val_loader,model,loss_calc,epoch,self.args)
 
             # remember the best acc1 and save checkpoint
             self.is_best=(acc1>self.best_acc1)
@@ -148,7 +151,7 @@ class Solver:
 
         # write to log file
         try:
-            with open('train_results.txt','w') as f:
+            with open('train_results.txt','a') as f:
                 f.write('epoch: {0} \n'
                   'batch time: {batch_time.avg:.3f}s\n'
                   'data loading time: {data_load_time.avg:.3f}s\n'
@@ -160,7 +163,7 @@ class Solver:
         except Exception as e:
             print(e)
 
-    def validate(self,val_loader,model,loss_calc,args):
+    def validate(self,val_loader,model,loss_calc,epoch,args):
         batch_time = AverageMeter()
         losses = AverageMeter()
         top1 = AverageMeter()
@@ -200,11 +203,12 @@ class Solver:
 
             # write to log file
             try:
-                with open('val_results.txt','w') as f:
-                    f.write('loss: {loss.avg:.4f})\n'
+                with open('val_results.txt','a') as f:
+                    f.write('epoch: {}\n'
+                          'loss: {loss.avg:.4f}\n'
                           'top1 accuracy: %{top1.avg:.3f}\n'
                           'top5 accuracy: %{top5.avg:.3f}'.format(
-                        loss=losses, top1=top1, top5=top5))
+                        epoch,loss=losses, top1=top1, top5=top5))
             except Exception as e:
                 print(e)
         return top1.avg
