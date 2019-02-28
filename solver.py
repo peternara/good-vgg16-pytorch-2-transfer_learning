@@ -38,6 +38,7 @@ class Solver:
                       .format(self.args.resume_file,self.args.start_spoch))
             else:
                 print("=> no checkpoint found at '{}'".format(self.args.resume_file))
+                return 1
 
         # enable the inbuilt cudnn auto-tuner to find the best algorithm to use for your hardware
         torch.backends.cudnn.benchmark = True
@@ -87,6 +88,7 @@ class Solver:
                 'best_acc1':self.best_acc1,
                 'optimizer':optimizer.state_dict(),
             },self.is_best)
+        return 0
 
     def train_epoch(self,train_loader,model,loss_calc,optimizer,epoch,args):
         batch_time=AverageMeter()
