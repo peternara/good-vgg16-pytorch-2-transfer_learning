@@ -158,7 +158,7 @@ class Solver:
                   'data loading time: {data_load_time.avg:.3f}s\n'
                   'loss: {loss.avg:.4f}\n'
                   'top1 accuracy: %{top1.avg:.3f}\n'
-                  'top5 accuracy: %{top5.avg:.3f}'.format(
+                  'top5 accuracy: %{top5.avg:.3f}\n'.format(
                     epoch,batch_time=batch_time,
                     data_load_time=data_load_time,loss=losses,top1=top1,top5=top5))
         except Exception as e:
@@ -198,7 +198,7 @@ class Solver:
                           'batch time: {batch_time.val:.3f}s (avg: {batch_time.avg:.3f}s)\n'
                           'loss: {loss.val:.4f} (avg: {loss.avg:.4f})\n'
                           'top1 accuracy: %{top1.val:.3f} (avg: %{top1.avg:.3f})\n'
-                          'top5 accuracy: %{top5.val:.3f} (avg: %{top5.avg:.3f})'.format(
+                          'top5 accuracy: %{top5.val:.3f} (avg: %{top5.avg:.3f})\n'.format(
                         i, len(val_loader), batch_time=batch_time,
                         loss=losses, top1=top1, top5=top5))
 
@@ -208,7 +208,7 @@ class Solver:
                     f.write('epoch: {}\n'
                           'loss: {loss.avg:.4f}\n'
                           'top1 accuracy: %{top1.avg:.3f}\n'
-                          'top5 accuracy: %{top5.avg:.3f}'.format(
+                          'top5 accuracy: %{top5.avg:.3f}\n'.format(
                         epoch,loss=losses, top1=top1, top5=top5))
             except Exception as e:
                 print(e)
