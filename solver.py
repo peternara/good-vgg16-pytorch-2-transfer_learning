@@ -123,10 +123,11 @@ class Solver:
             top1.update(acc1[0],input.size(0))
             top5.update(acc5[0],input.size(0))
 
+            #print('global step: {}'.format(epoch * self.steps_per_epoch + i))
+
             # display in tensorboardX
             if i%args.summary_freq==0:
                 self.writer.add_scalar('loss',loss,epoch*self.steps_per_epoch+i)
-                print('global step: {}'.format(epoch*self.steps_per_epoch+i))
                 self.writer.add_scalar('top1_accuracy',acc1[0],epoch*self.steps_per_epoch+i)
                 self.writer.add_scalar('top5_accuracy',acc5[0],epoch*self.steps_per_epoch+i)
 
@@ -145,7 +146,7 @@ class Solver:
                       'data loading time: {data_load_time.val:.3f}s (avg: {data_load_time.avg:.3f}s)\n'
                       'loss: {loss.val:.4f} (avg: {loss.avg:.4f})\n'
                       'top1 accuracy: %{top1.val:.3f} (avg: %{top1.avg:.3f})\n'
-                      'top5 accuracy: %{top5.val:.3f} (avg: %{top5.avg:.3f})'.format(
+                      'top5 accuracy: %{top5.val:.3f} (avg: %{top5.avg:.3f})\n'.format(
                         epoch,i,len(train_loader),batch_time=batch_time,
                         data_load_time=data_load_time,loss=losses,top1=top1,top5=top5))
 
